@@ -18,7 +18,7 @@ export async function handleGETRequest(
   // Check if the data is already in the cache
   const cachedData = cache.get(url);
   if (cachedData) {
-    console.log('cachedData 1', cachedData)
+    // console.log('cachedData 1', cachedData)
     return cachedData;
   }
 
@@ -28,7 +28,7 @@ export async function handleGETRequest(
       isBuffer ? { responseType: 'arraybuffer' } : undefined,
     );
     cache.set(url, data);
-    console.log('CACHE',cache)
+    // console.log('CACHE',cache)
     return data;
   } catch (e) {
     console.error(`failed GET request (${url}): ${e.message}`);

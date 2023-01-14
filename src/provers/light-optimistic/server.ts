@@ -4,6 +4,7 @@ import { MemoryStore } from './memory-store.js';
 import { LightClient } from '../../clients/light/index.js';
 import { getDefaultClientConfig } from '../../rpc-bundle/utils.js';
 import { BeaconAPIProver } from '../beacon-api-light/client.js';
+import { init } from '@chainsafe/bls/lib/switchable.js';
 
 export function getApp(network: number, beaconAPIURL: string) {
   const app = express();
@@ -60,3 +61,45 @@ export function getApp(network: number, beaconAPIURL: string) {
   return app;
 }
 
+export async function startServer(
+  port: number,
+  network: number,
+  beaconAPIURL: string,
+) {
+  handleErrors();
+  try {
+    await init('blst-native');
+  } catch {
+    await init('herumi');
+  }
+  const httpServer = http.createServer();
+
+  httpServer.setTimeout(1000 * 20); // 20s
+  httpServer.on('request', getApp(network, beaconAPIURL));
+
+  httpServer.listen(port, function () {
+    console.log(`Server listening on port ${port}`);
+  });
+}
+
+function handleErrors() {
+  process.on('uncaughtException', (err: Error) => {
+    console.error('uncaughtException', process.pid, err);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason: any, promise: any) => {
+    console.error('unhandledRejection', process.pid, { reason, promise });
+    process.exit(1);
+  });
+
+  process.on('SIGTERM', () => {
+    console.log(`Process ${process.pid} exiting (SIGTERM)...`);
+    process.exit();
+  });
+
+  process.on('SIGINT', () => {
+    console.log(`Process ${process.pid} exiting (SIGINT)...`);
+    process.exit();
+  });
+}
