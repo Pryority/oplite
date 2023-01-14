@@ -8,7 +8,7 @@ export interface IProver {
     period: number,
     currentPeriod: number,
     count: number,
-  ): AsyncOrSync<Uint8Array>;
+  ): AsyncOrSync<Uint8Array | undefined>;
 
   getSyncUpdate(period: number): AsyncOrSync<LightClientUpdate>;
 }

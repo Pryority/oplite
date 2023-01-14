@@ -1,11 +1,11 @@
 // A light client implementation that uses "provers" (implementations of the IProver interface) 
 // to verify information from the Ethereum network and maintain its own copy of the Ethereum state.
 
-import { isUint8ArrayEq } from '../../utils.js';
 import { BaseClient } from '../base-client.js';
 import { ClientConfig, ProverInfo } from '../types.js';
 import { IProver } from './iprover.js';
 import { DEFAULT_BATCH_SIZE } from '../constants.js';
+import { isUint8ArrayEq } from '../../utils.js';
 
 export type ProverInfoL = {
   syncCommitteeHash: Uint8Array;
@@ -27,7 +27,7 @@ export class OptimisticLightClient extends BaseClient {
   async getCommittee(
     period: number,
     proverIndex: number,
-    expectedCommitteeHash: Uint8Array | null,
+    expectedCommitteeHash: Uint8Array | undefined,
   ): Promise<Uint8Array[]> {
     if (period === this.genesisPeriod) return this.genesisCommittee;
     if (!expectedCommitteeHash) throw new Error('expectedCommitteeHash required');
@@ -65,11 +65,11 @@ export class OptimisticLightClient extends BaseClient {
   // committee and prover index of the first honest prover
   async syncFromGenesis(): Promise<ProverInfo[]> {
     const currentPeriod = this.getCurrentPeriod();
-    let lastCommitteeHash: Uint8Array = this.getCommitteeHash(this.genesisCommittee);
+    let lastCommitteeHash: Uint8Array | null | undefined = this.getCommitteeHash(this.genesisCommittee);
     let proverInfos: ProverInfoL[] = this.provers.map((_, i) => ({index: i, syncCommitteeHash: new Uint8Array()}));
     let foundConflict = false;
     for (let period = this.genesisPeriod + 1; period <= currentPeriod; period++) {
-      const committeeHashes: (Uint8Array | null)[] = await Promise.all(proverInfos.map(async pi => {
+      const committeeHashes: (Uint8Array | null | undefined)[] = await Promise.all(proverInfos.map(async pi => {
       try {
         return await this.provers[pi.index].getCommitteeHash(period, currentPeriod, this.batchSize);
       } catch (e) {

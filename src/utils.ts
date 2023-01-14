@@ -1,4 +1,4 @@
-import { toHexString, fromHexString } from '@chainsafe/ssz';
+import { toHexString } from '@chainsafe/ssz';
 import bls from '@chainsafe/bls/switchable';
 import _ from 'lodash';
 import axios from 'axios';

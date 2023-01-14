@@ -21,6 +21,16 @@ It's important to note that this is a high-level overview and there might be mor
 
 Keep in mind that adding support for a new feature to a project can be a complex task, and it is important to have a good understanding of the existing codebase and architecture, as well as the new feature you are trying to implement.
 
+### BeaconAPIProver vs. LightOptimisticProver
+
+The main difference between the two is that the first code uses the BeaconAPIProver class, which is designed to work with a light client, while the second code uses the LightOptimisticProver class, which is designed to work with an optimistic client.
+
+The BeaconAPIProver class connects to an HTTP server that implements an Ethereum 2.0 beacon node JSON-RPC API to fetch and return LightClientUpdates for a specific period. It also uses an in-memory cache to store the LightClientUpdates it has fetched so that it can quickly return the data without having to refetch it from the server.
+
+The LightOptimisticProver class connects to an HTTP server that implements a similar JSON-RPC API to fetch and return information about validator committees and their hashes for a specific period, as well as LightClientUpdates for a specific period.
+
+Both classes use similar techniques to fetch data from the server, cache it, and return it to the client. The main difference is the type of data they fetch, and the structure of that data.
+
 ### Improvements
 
 Modularization:
