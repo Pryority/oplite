@@ -7,6 +7,20 @@ A light client for interacting with a beacon chain (a type of blockchain) in the
 
 ---
 
+### Adding Gossip
+
+To implement the Altair Light Client Networking functionality, you will need to update your existing code to include the necessary components and functions defined in the specification. Here are some steps you may take to implement this functionality:
+
+Add support for the gossipsub domain: This will involve updating your code to subscribe to the light_client_finality_update and light_client_optimistic_update topics, as well as sending and receiving messages of the corresponding message types LightClientFinalityUpdate and LightClientOptimisticUpdate.
+Add support for the Req/Resp domain: This will involve updating your code to handle new request types such as GetLightClientBootstrap, LightClientUpdatesByRange, GetLightClientFinalityUpdate, and GetLightClientOptimisticUpdate, as well as sending and receiving corresponding response messages.
+Update the OptimisticLightClient class to include new methods and properties defined in the specification such as getCommittee, checkCommitteeHashAt, fight, syncUpdateVerifyGetCommittee, and getCommitteeHash
+Update the ClientManager class to include new methods and properties defined in the specification such as sync
+Update the IProver interface to include new methods and properties defined in the specification such as getCommittee, getSyncUpdate, and getCommitteeHash
+Perform extensive testing to ensure that the implementation is fully compliant with the specification and that it functions correctly in different scenarios.
+It's important to note that this is a high-level overview and there might be more details to consider when implementing this specification. It's recommended to carefully read and understand the specification before making any changes to your code.
+
+Keep in mind that adding support for a new feature to a project can be a complex task, and it is important to have a good understanding of the existing codebase and architecture, as well as the new feature you are trying to implement.
+
 ### Improvements
 
 Modularization:

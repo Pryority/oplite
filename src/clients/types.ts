@@ -1,3 +1,4 @@
+import { ContainerType } from '@chainsafe/ssz';
 import { IBeaconConfig } from '@lodestar/config';
 import { PubKeyString, Slot } from '../types.js';
 
@@ -27,3 +28,14 @@ export type ExecutionInfo = {
 export type VerifyWithReason =
   | { correct: true }
   | { correct: false; reason: string };
+
+
+export type FinalizedHeader = {
+  attestedHeader: ContainerType<{
+    slot: import("@chainsafe/ssz").UintNumberType;
+    proposerIndex: import("@chainsafe/ssz").UintNumberType;
+    parentRoot: import("@chainsafe/ssz").ByteVectorType;
+    stateRoot: import("@chainsafe/ssz").ByteVectorType;
+    bodyRoot: import("@chainsafe/ssz").ByteVectorType;
+  }>;
+}

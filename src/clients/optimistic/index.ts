@@ -1,3 +1,6 @@
+// A light client implementation that uses "provers" (implementations of the IProver interface) 
+// to verify information from the Ethereum network and maintain its own copy of the Ethereum state.
+
 import { isUint8ArrayEq } from '../../utils.js';
 import { BaseClient } from '../base-client.js';
 import { ClientConfig, ProverInfo } from '../types.js';
