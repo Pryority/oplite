@@ -35,6 +35,8 @@
     "@lodestar/light-client": "https://gitpkg.now.sh/shresthagrawal/lodestar/packages/light-client?b46d752f6bda6f8948d8a21179574cae3f02c109",
     "@lodestar/types": "^1.2.0",
     "@samczsun/abi-guesser": "https://github.com/samczsun/abi-guesser",
+    "@types/leveldown": "^4.0.3",
+    "@types/levelup": "^5.1.2",
     "@types/lru-cache": "^7.10.10",
     "async-retry": "^1.3.3",
     "axios": "0.27.2",
@@ -42,6 +44,8 @@
     "dotenv": "16.0.2",
     "eth-rpc-errors": "4.0.3",
     "json-rpc-engine": "6.1.0",
+    "leveldown": "^6.1.1",
+    "levelup": "^5.1.1",
     "lru-cache": "^7.14.1",
     "yargs": "17.5.1"
   },

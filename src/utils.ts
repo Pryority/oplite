@@ -3,8 +3,10 @@ import bls from '@chainsafe/bls/switchable';
 import _ from 'lodash';
 import axios from 'axios';
 import LRU from 'lru-cache';
+import levelup from 'levelup';
+import leveldown from 'leveldown';
 
-const cache = new LRU({ max: 500 });
+const db = levelup(leveldown('./mydb'));
 
 export async function handleGETRequest(
   url: string,
@@ -15,26 +17,26 @@ export async function handleGETRequest(
     throw Error(`GET request failed: ${url}`);
   }
 
-  // Check if the data is already in the cache
-  const cachedData = cache.get(url);
-  if (cachedData) {
-    // console.log('cachedData 1', cachedData)
-    return cachedData;
-  }
-
+  // Check if the data is already in the levelup
   try {
-    const { data } = await axios.get(
-      url,
-      isBuffer ? { responseType: 'arraybuffer' } : undefined,
-    );
-    cache.set(url, data);
-    // console.log('CACHE',cache)
+    const data = await db.get(url);
     return data;
   } catch (e) {
-    console.error(`failed GET request (${url}): ${e.message}`);
-    return handleGETRequest(url, isBuffer, retry - 1);
+    // The data is not in levelup
+    try {
+      const { data } = await axios.get(
+        url,
+        isBuffer ? { responseType: 'arraybuffer' } : undefined,
+      );
+      await db.put(url, data);
+      return data;
+    } catch (e) {
+      console.error(`failed GET request (${url}): ${e.message}`);
+      return handleGETRequest(url, isBuffer, retry - 1);
+    }
   }
 }
+
 
 export function logFloor(x: number, base: number = 2) {
   return Math.floor(Math.log(x) / Math.log(base));
