@@ -92,7 +92,7 @@ export abstract class BaseClient {
     } catch (err) {
         console.error(err);
     }
-}
+  }
 
   // FIRST THE ENGINE SUBSCRIBES TO THE EXECUTION
   public async subscribe(callback: (ei: ExecutionInfo) => AsyncOrSync<void>) {
