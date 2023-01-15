@@ -1,4 +1,5 @@
 import { AsyncOrSync } from 'ts-essentials';
+import AsyncRetry from 'async-retry';
 import axios from 'axios';
 import * as altair from '@lodestar/types/altair';
 import * as phase0 from '@lodestar/types/phase0';
@@ -74,6 +75,25 @@ export abstract class BaseClient {
     return this.latestPeriod === this.getCurrentPeriod();
   }
 
+  async checkUpdates() {
+    try {
+        await AsyncRetry(async (bail: unknown) => {
+            const execution = await this.getLatestExecution();
+            // if execution is not null, return
+            if (execution) {
+                return execution;
+            }
+            // else, throw an error
+            throw new Error('🚫 Invalid Optimistic Update: insufficient signatures');
+        }, {
+            retries: 3,  // number of retries
+            onRetry: (e: Error) => console.log(e.message) // log the error message
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+
   // FIRST THE ENGINE SUBSCRIBES TO THE EXECUTION
   public async subscribe(callback: (ei: ExecutionInfo) => AsyncOrSync<void>) {
     let timeoutId: any;
@@ -99,8 +119,7 @@ export abstract class BaseClient {
     const opUp = this.optimisticUpdateFromJSON(data.data);
     const verify = await this.optimisticUpdateVerify(this.latestCommittee, opUp);
     if (!verify.correct) throw new Error(`🚫 Invalid Optimistic Update: ${verify.reason}`);
-    console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}\n`);
-    console.log('LATEST EXECUTION --->>',await this.getExecutionFromBlockRoot(data.data.attested_header.slot, data.data.attested_header.body_root),'\n')
+    console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
     return this.getExecutionFromBlockRoot(data.data.attested_header.slot, data.data.attested_header.body_root);
   }
 

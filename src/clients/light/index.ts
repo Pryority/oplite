@@ -1,4 +1,12 @@
-import { concatUint8Array, isUint8ArrayEq, smallHexStr } from '../../utils.js';
+// LightClient - A child class of the BaseClient class, and has a few additional properties and methods.
+// ----------------------------------------------------------------------------------------------------
+// Purpose: used to retrieve and verify data from a beacon chain. This is achieved by using
+// the syncProver method, which retrieves and verifies updates from the beacon chain for a 
+// given period of time. It takes in an IProver object, a startPeriod, a currentPeriod, and 
+// a startCommittee. It will iterate from the startPeriod to the currentPeriod and for each 
+// period, it will call the getSyncUpdate method on the passed IProver object and will call syncUpdateVerifyGetCommittee method to verify the update. If the update is valid, it will call the addUpdate method on the store object and set the startCommittee to the validOrCommittee.
+// The syncFromGenesis method is used to retrieve the current sync committee and prover index of the first honest prover. It uses the syncProver method and will iterate through the array of provers and call the syncProver method on each one. If the period returned is equal to the currentPeriod it will return the prover info.
+
 import { BaseClient } from '../base-client.js';
 import { ClientConfig, ProverInfo } from '../types.js';
 import { IProver } from './iprover.js';

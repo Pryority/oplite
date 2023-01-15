@@ -56,7 +56,7 @@ export class ClientManager {
     // 2. HAPPENS IMMEDIATELY AFTER SUBSCRIBING TO THE BASE CLIENT
     this.client.subscribe(ei => {
       console.log(
-        `🆕 Client Manager got a new blockheader: ${ei.blockNumber} ${ei.blockhash}`,
+        `✨ Client Manager got blockheader from latest execution: ${ei.blockNumber} ${ei.blockhash}\n`,
       );
       provider.update(ei.blockhash, ei.blockNumber);
     });
