@@ -1,5 +1,3 @@
-import { ClientType } from '../constants.js';
-
 export const defaultBeaconAPIURL: { [network: number]: string } = {
   // 1: 'https://lodestar-mainnet.chainsafe.io',
   // 1: 'http://testing.mainnet.beacon-api.nimbus.team',
@@ -8,10 +6,7 @@ export const defaultBeaconAPIURL: { [network: number]: string } = {
   5: 'http://testing.prater.beacon-api.nimbus.team',
 };
 
-export const defaultProvers: {
-  [client: string]: { [network: number]: string[] };
-} = {
-  [ClientType.optimistic]: {
+export const defaultProvers: { [network: number]: string[] } = {
     1: [
       'https://light-optimistic-mainnet-1.herokuapp.com',
       'https://light-optimistic-mainnet-2.herokuapp.com',
@@ -22,11 +17,6 @@ export const defaultProvers: {
       'https://light-optimistic-goerli-1.herokuapp.com',
       'https://light-optimistic-goerli-2.herokuapp.com',
     ],
-  },
-  [ClientType.light]: {
-    1: [defaultBeaconAPIURL[1]],
-    5: [defaultBeaconAPIURL[5]],
-  },
 };
 
 // TODO: Add more endpoints.

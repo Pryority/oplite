@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import { createIBeaconConfig } from '@lodestar/config';
 import { fromHexString } from '@chainsafe/ssz';
 import { networksChainConfig } from '@lodestar/config/networks';

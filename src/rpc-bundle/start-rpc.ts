@@ -58,9 +58,7 @@ async function main() {
 
     const network = argv.network || parseInt(process.env.CHAIN_ID || '1');
     const port = argv.port || (network === 5 ? 8547 : 8546);
-    const clientType =
-      argv.client === 'light' ? ClientType.light : ClientType.optimistic;
-    const proverURLs = defaultProvers[clientType][network].concat(
+    const proverURLs = defaultProvers[network].concat(
       argv.provers ? (argv.provers as string).split(',') : [],
     );
     const beaconAPIURL =
@@ -69,7 +67,6 @@ async function main() {
 
     const cm = new ClientManager(
       network,
-      clientType,
       beaconAPIURL,
       providerURL,
       proverURLs,

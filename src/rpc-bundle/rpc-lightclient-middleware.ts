@@ -15,16 +15,14 @@ import { EthereumRpcError, ethErrors } from 'eth-rpc-errors';
 // JSON-RPC server using the provider returned by the sync function.
 
 export function getRPCLightClientMiddleware(network: number) {
-  const clientType = ClientType.optimistic;
   const beaconAPIURL = defaultBeaconAPIURL[network];
-  const proverURLs = defaultProvers[clientType][network];
+  const proverURLs = defaultProvers[network];
   const [providerURL] = defaultPublicRPC[network];
   if (!defaultBeaconAPIURL[network] || !defaultProvers[network] || !defaultPublicRPC[network]) {
     throw new Error(`Invalid network value: ${network}`);
   }
   const cm = new ClientManager(
   network,
-  clientType,
   beaconAPIURL,
   providerURL,
   proverURLs,
