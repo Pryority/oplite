@@ -96,7 +96,10 @@ export abstract class BaseClient {
     const checkUpdates = async () => {
         try {
             await this.sync();
-            console.log('⏳ OSSU - Getting latest execution...')
+            console.log(`
+                                              ⏳ OSSU - Getting latest execution...
+                                              
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓`)
             const ei = await this.getLatestExecution();
             if (ei && ei.blockhash !== this.latestBlockHash) {
                 this.latestBlockHash = ei.blockhash;
@@ -191,10 +194,26 @@ export abstract class BaseClient {
       `);
       firstTime = false;
     } else {
-      console.log(`✅ OSSU - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
+      console.log(`                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ██▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ░░▓▓▓▓▒▒      ▒▒▓▓▓▓▒▒                                                            
+                                                      ▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓                                                              
+                                                        ▓▓▓▓▓▓▓▓▓▓▓▓██░░                                                              
+                                                          ░░▓▓████▒▒                                                                            
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ░░▓▓██▒▒      
+
+                                                    ✅ OSSU - VERIFIED
+                  Slot ${data.data.attested_header.slot} Header ${data.data.attested_header.body_root}`);
     }
-    const opUp = this.optimisticUpdateFromJSON(data.data);
-    const verify = await this.optimisticUpdateVerify(this.latestCommittee, opUp);
+    const ossu = this.optimisticUpdateFromJSON(data.data);
+    const verify = await this.optimisticUpdateVerify(this.latestCommittee, ossu);
     if (!verify.correct) throw new Error(`🚫 Invalid Optimistic Update: ${verify.reason}`);
     // console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
     return this.getExecutionFromBlockRoot(data.data.attested_header.slot, data.data.attested_header.body_root);

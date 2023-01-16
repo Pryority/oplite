@@ -61,25 +61,12 @@ export class ClientManager {
                                                     ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
                                                     ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
                                                     ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ██▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                                    ░░▓▓▓▓▒▒      ▒▒▓▓▓▓▒▒                                                            
-                                                      ▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓                                                              
-                                                        ▓▓▓▓▓▓▓▓▓▓▓▓██░░                                                              
-                                                          ░░▓▓████▒▒                                                                            
-                                                          ▓▓▓▓▓▓▓▓                                                                    
-                                                          ▓▓▓▓▓▓▓▓                                                                    
-                                                          ▓▓▓▓▓▓▓▓                                                                    
-                                                          ▓▓▓▓▓▓▓▓                                                                    
-                                                          ░░▓▓██▒▒      
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓    
 
-✨  LATEST EXECUTION: ${ei.blockNumber} ${ei.blockhash}
-⏰  Awaiting next blockheader...
-        `,
+                                                    ✨  LATEST EXECUTION
+            Block Number ${ei.blockNumber} Block Hash ${ei.blockhash}
+            
+                                                    ⏰  Awaiting next OSSU...`,
       );
       provider.update(ei.blockhash, ei.blockNumber);
     });
