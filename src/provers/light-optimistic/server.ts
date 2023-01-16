@@ -78,7 +78,7 @@ export async function startServer(
   httpServer.on('request', getApp(network, beaconAPIURL));
 
   httpServer.listen(port, function () {
-    console.log(`Server listening on port ${port}`);
+    console.log(`🌐 Server listening on port ${port}`);
   });
 }
 

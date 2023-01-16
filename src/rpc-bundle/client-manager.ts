@@ -5,6 +5,7 @@ import { BaseClient } from '../clients/base-client.js';
 import { LightOptimisticProver } from '../provers/light-optimistic/client.js';
 import { OptimisticLightClient } from '../clients/optimistic/index.js';
 import { getDefaultClientConfig } from './utils.js';
+import { ExecutionInfo } from '../clients/types.js';
 
 export class ClientManager {
   client: BaseClient;
@@ -25,6 +26,7 @@ export class ClientManager {
     );
   }
 
+  // returns a promise of a "VerifyingProvider" object. The function first attempts to initialize a library called "blst-native", and if that fails, it falls back to initializing "herumi" instead. Then it calls the "sync" method on a "client" object, and afterwards it retrieves blockhash and blockNumber information from the client, using the "getNextValidExecutionInfo" method. With this information, it creates a new "VerifyingProvider" object and assigns it to the "provider" variable. Finally, the function subscribes to the base client and logs a message when an execution info event is emitted.
   async sync(): Promise<VerifyingProvider> {
     try {
       await init('blst-native');
@@ -43,8 +45,41 @@ export class ClientManager {
     );
     // 2. HAPPENS IMMEDIATELY AFTER SUBSCRIBING TO THE BASE CLIENT
     this.client.subscribe(ei => {
-      console.log(
-        `✨ Client Manager got blockheader from latest execution: ${ei.blockNumber} ${ei.blockhash}\n`,
+      let prevEI: ExecutionInfo;
+      console.log(`
+                                                          ░▓▓▓▓▓                                                                        
+                                                          ▓▓▓▓▓▓░░                                                                      
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                        ░░▓▓▓▓▓▓▓▓▒▒                                                                  
+                                                      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░                                                              
+                                                      ▓▓▓▓████▓▓████▓▓▓▓                                                              
+                                                    ▒▒▓▓██▓▓████▓▓▒▒▓▓▓▓▒▒                                                            
+                                                    ▓▓▓▓██  ████▒▒  ▓▓▓▓▓▓                                                            
+                                                    ██▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ██▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                                    ░░▓▓▓▓▒▒      ▒▒▓▓▓▓▒▒                                                            
+                                                      ▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓                                                              
+                                                        ▓▓▓▓▓▓▓▓▓▓▓▓██░░                                                              
+                                                          ░░▓▓████▒▒                                                                            
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ▓▓▓▓▓▓▓▓                                                                    
+                                                          ░░▓▓██▒▒      
+
+✨  LATEST EXECUTION: ${ei.blockNumber} ${ei.blockhash}
+⏰  Awaiting next blockheader...
+        `,
       );
       provider.update(ei.blockhash, ei.blockNumber);
     });

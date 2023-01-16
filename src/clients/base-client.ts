@@ -27,6 +27,8 @@ import {
 } from './types.js';
 import { Bytes32, OptimisticUpdate, LightClientUpdate } from '../types.js';
 
+let firstTime = true;
+
 export abstract class BaseClient {
   genesisCommittee: Uint8Array[];
   genesisPeriod: number;
@@ -48,6 +50,7 @@ export abstract class BaseClient {
 
   protected abstract syncFromGenesis(): Promise<ProverInfo[]>;
 
+  // Syncs the client with the latest execution
   public async sync(): Promise<void> {
     const currentPeriod = this.getCurrentPeriod();
     if (currentPeriod <= this.latestPeriod) {return }
@@ -61,6 +64,7 @@ export abstract class BaseClient {
     // console.log('proverInfos[0].syncCommittee',proverInfos[0].syncCommittee)
   }
 
+  // getter that returns a boolean indicating if the client is synced with the latest execution
   public get isSynced() {
     return this.latestPeriod === this.getCurrentPeriod();
   }
@@ -92,7 +96,7 @@ export abstract class BaseClient {
     const checkUpdates = async () => {
         try {
             await this.sync();
-            console.log('⏳ Optimistic Update - Verifying execution...')
+            console.log('⏳ OSSU - Getting latest execution...')
             const ei = await this.getLatestExecution();
             if (ei && ei.blockhash !== this.latestBlockHash) {
                 this.latestBlockHash = ei.blockhash;
@@ -109,10 +113,90 @@ export abstract class BaseClient {
   // This function retrieves the latest execution from the server and returns it as an OptimisticUpdate object.
   protected async getLatestExecution(): Promise<ExecutionInfo | null> {
     const { data } = await axios.get(`${this.beaconChainAPIURL}/eth/v1/beacon/light_client/optimistic_update`);
+    if (firstTime) {
+      console.log(`
+                        *          .
+                        *       '
+                    *                *
+
+
+                              *                            .  *       .             *
+                                      
+                                        .        *       .       .       *
+                                                              .     *
+                            .  *        *
+                        .
+                                        .        .
+                                          .  *           *                     *
+                            .
+                  *          .   *    *
+                                  .      .  *       .             *
+                                      
+                                        .        *       .       .       *
+                                                              .     *
+                            .  *        *
+                        .
+                                        .        .
+                                          .  *           *                     *
+                            .
+                  *          .   *    *
+                                  .
+                                                  .        .
+                                                    .  *           *                     *
+                                      .
+                  *          .   *
+                                      .  *       .             *
+
+                                      .        *       .       .       *
+                                                                                                        .     *
+                  .  *        *
+                  .
+                              .        .
+                                .  *           *         
+
+
+                                      *   '*
+                                              *
+                                                    *
+                                                          *
+                                    *
+                                          *
+                                                *
+                                        *
+                                                  .        .
+                                                    .  *           *                     *
+                                      .
+                  *          .   *
+                                      .  *       .             *
+
+                                      .        *       .       .       *
+                                                                                                        .     *
+                  .  *        *
+                  .
+                              .        .
+                                .  *           *         
+
+
+                                      *   '*
+                                              *
+                                                    *
+                                                          *
+                                    *
+                                          *
+                                                *
+                                        *
+                      *
+
+                                  
+      `);
+      firstTime = false;
+    } else {
+      console.log(`✅ OSSU - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
+    }
     const opUp = this.optimisticUpdateFromJSON(data.data);
     const verify = await this.optimisticUpdateVerify(this.latestCommittee, opUp);
     if (!verify.correct) throw new Error(`🚫 Invalid Optimistic Update: ${verify.reason}`);
-    console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
+    // console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
     return this.getExecutionFromBlockRoot(data.data.attested_header.slot, data.data.attested_header.body_root);
   }
 

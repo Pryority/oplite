@@ -29,7 +29,7 @@ export class LightOptimisticProver implements IProver {
     } catch (error) {
       console.error(error);
     }
-    console.log('LightClientUpdateSSZ.deserialize(new Uint8Array(res))',LightClientUpdateSSZ.deserialize(new Uint8Array(res)))
+    // console.log('LightClientUpdateSSZ.deserialize(new Uint8Array(res))',LightClientUpdateSSZ.deserialize(new Uint8Array(res)))
     return LightClientUpdateSSZ.deserialize(new Uint8Array(res));
   }
 
@@ -37,7 +37,7 @@ export class LightOptimisticProver implements IProver {
     let res: Uint8Array | undefined = await this.cache.get(`/sync-committee/hashes?startPeriod=${startPeriod}&maxCount=${count}`) as Uint8Array || await handleGETRequest(`${this.serverURL}/sync-committee/hashes?startPeriod=${startPeriod}&maxCount=${count}`);
     res = await this.cache.get(`/sync-committee/hashes?startPeriod=${startPeriod}&maxCount=${count}`) as Uint8Array || await handleGETRequest(`${this.serverURL}/sync-committee/hashes?startPeriod=${startPeriod}&maxCount=${count}`);
     await this.cache.set(`/sync-committee/hashes?startPeriod=${startPeriod}&maxCount=${count}`, res);
-    console.log('HashesSSZ.deserialize(res)',HashesSSZ.deserialize(res))
+    // console.log('HashesSSZ.deserialize(res)',HashesSSZ.deserialize(res))
     return HashesSSZ.deserialize(res);
   }
   
