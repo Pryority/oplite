@@ -37,8 +37,9 @@ export class LightClient extends BaseClient {
     return { syncCommittee: startCommittee, period: currentPeriod };
   }
 
-  // returns the prover info containing the current sync
-  // committee and prover index of the first honest prover
+  
+  // syncFromGenesis is an abstract function that is intended to be overridden by a subclass of BaseClient. 
+  // It is used to sync to latest execution from genesis and it returns the prover info containing the current sync committee and prover index of the first honest prover
   protected async syncFromGenesis(): Promise<ProverInfo[]> {
     const currentPeriod = this.getCurrentPeriod();
     let startPeriod = this.genesisPeriod;

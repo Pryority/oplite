@@ -17,9 +17,8 @@ import {
   assertValidLightClientUpdate,
   assertValidSignedHeader,
 } from '@lodestar/light-client/validation';
-import { SyncCommitteeFast } from '@lodestar/light-client/types';
 import { BEACON_SYNC_SUPER_MAJORITY, POLLING_DELAY } from './constants.js';
-import { isCommitteeSame, concatUint8Array, smallHexStr } from '../utils.js';
+import { isCommitteeSame, concatUint8Array } from '../utils.js';
 import {
   ClientConfig,
   ProverInfo,
@@ -27,15 +26,7 @@ import {
   VerifyWithReason,
 } from './types.js';
 import { Bytes32, OptimisticUpdate, LightClientUpdate } from '../types.js';
-import { Console } from 'console';
-// import { guessAbiEncodedData } from './decoder';
-// import {EthereumBlockDecoder} from './EthereumBlockDecoder';
-type UpdateInfo = {
-  ei: ExecutionInfo;
-  blockhash: string;
-  blockNumber: number | bigint;
-  blockData: unknown;
-}
+
 export abstract class BaseClient {
   genesisCommittee: Uint8Array[];
   genesisPeriod: number;
@@ -45,7 +36,6 @@ export abstract class BaseClient {
   latestCommittee: Uint8Array[];
   latestPeriod: number = -1;
   latestBlockHash: string;
-  // private ethereumBlockDecoder: EthereumBlockDecoder;
 
   constructor(config: ClientConfig, protected beaconChainAPIURL: string) {
     this.genesisCommittee = config.genesis.committee.map(pk =>
