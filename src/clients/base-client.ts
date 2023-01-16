@@ -75,6 +75,7 @@ export abstract class BaseClient {
     return this.latestPeriod === this.getCurrentPeriod();
   }
 
+  // Checks if there are any new updates and if so, it retrieves the latest execution. It uses the async-retry library to retry up to 3 times if there is an error. If there is still no execution after 3 retries, it throws an error.
   async checkUpdates() {
     try {
         await AsyncRetry(async (bail: unknown) => {
@@ -95,6 +96,7 @@ export abstract class BaseClient {
   }
 
   // FIRST THE ENGINE SUBSCRIBES TO THE EXECUTION
+  // This function subscribes to the execution and calls the provided callback function with the execution info as the argument. It uses setTimeout to periodically check for new updates and call the callback function.
   public async subscribe(callback: (ei: ExecutionInfo) => AsyncOrSync<void>) {
     let timeoutId: any;
     const checkUpdates = async () => {
@@ -114,6 +116,7 @@ export abstract class BaseClient {
     timeoutId = setTimeout(checkUpdates, POLLING_DELAY);
   }
 
+  // This function retrieves the latest execution from the server and returns it as an OptimisticUpdate object.
   protected async getLatestExecution(): Promise<ExecutionInfo | null> {
     const { data } = await axios.get(`${this.beaconChainAPIURL}/eth/v1/beacon/light_client/optimistic_update`);
     const opUp = this.optimisticUpdateFromJSON(data.data);
@@ -202,6 +205,7 @@ export abstract class BaseClient {
     return altair.ssz.LightClientOptimisticUpdate.fromJson(update);
   }
 
+  // Verifies the provided OptimisticUpdate. It returns an object containing the result of the verification and the reason for the result.
   async optimisticUpdateVerify(
     committee: Uint8Array[],
     update: OptimisticUpdate,
@@ -230,6 +234,7 @@ export abstract class BaseClient {
       return { correct: true };
   }
   
+  // This function calculates and returns the current period based on the current slot and the genesis time from the chain configuration.
   getCurrentPeriod(): number {
     return computeSyncPeriodAtSlot(
       getCurrentSlot(this.chainConfig, this.genesisTime),
