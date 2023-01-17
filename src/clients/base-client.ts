@@ -193,8 +193,8 @@ export abstract class BaseClient {
     } else {
       console.log(`✅ OSSU - VERIFIED - Slot ${data.data.attested_header.slot} | Header ${data.data.attested_header.body_root}`);
     }
-    const opUp = this.optimisticUpdateFromJSON(data.data);
-    const verify = await this.optimisticUpdateVerify(this.latestCommittee, opUp);
+    const ossu = this.optimisticUpdateFromJSON(data.data);
+    const verify = await this.optimisticUpdateVerify(this.latestCommittee, ossu);
     if (!verify.correct) throw new Error(`🚫 Invalid Optimistic Update: ${verify.reason}`);
     // console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
     return this.getExecutionFromBlockRoot(data.data.attested_header.slot, data.data.attested_header.body_root);
