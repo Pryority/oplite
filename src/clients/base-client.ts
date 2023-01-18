@@ -95,16 +95,7 @@ export abstract class BaseClient {
     const checkUpdates = async () => {
         try {
             await this.sync();
-            console.log(`⏳  OSSU - FETCH - Latest!
-            
-                                  ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-                                  ░░▓▓▓▓▒▒      ▒▒▓▓▓▓▒▒                                                            
-                                    ▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓                                                              
-                                      ▓▓▓▓▓▓▓▓▓▓▓▓██░░                                                              
-                                        ░░▓▓████▒▒                                                                            
-                                        ▓▓▓▓▓▓▓▓                                                                                                                                   
-                                        ▓▓▓▓▓▓▓▓                                                                    
-                                        ░░▓▓██▒▒ `)
+            console.log(`⏳  OSSU - FETCH - Latest!`)
             const ei = await this.getLatestExecution();
             if (ei && ei.blockhash !== this.latestBlockHash) {
                 this.latestBlockHash = ei.blockhash;
@@ -134,56 +125,10 @@ export abstract class BaseClient {
                   .  *        *
                   .
                               .        .
-                                .  *           *         
-
-
-                                      *   '*
-                                              *
-                                                    *
-                                                          *
-                                    *
-                                          *
-                                                *
-                                        *
-                                                  .        .
-                                                    .  *           *                     *
-                                      .
-                  *          .   *
-                                      .  *       .             *
-
-                                      .        *       .       .       *
-                                                                                                        .     *
-                  .  *        *
-                  .
-                              .        .
-                                .  *           *         
-
-
-                                      *   '*
-                                              *
-                                                    *
-                                                          *
-                                    *
-                                          *
-                                                *
-                                        *
-                      *
-
-                                  
-      `);
+                                .  *           *           `);
       firstTime = false;
     } else {
-        console.log(`                   ░▓▓▓▓▓                                                                        
-                                        ▓▓▓▓▓▓░░                                                                      
-                                        ▓▓▓▓▓▓▓▓                                                                                                                                  
-                                      ░░▓▓▓▓▓▓▓▓▒▒                                                                   
-                                    ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░                                                              
-                                    ▓▓▓▓████▓▓████▓▓▓▓                                                              
-                                  ▒▒▓▓██▓▓████▓▓▒▒▓▓▓▓▒▒                                                            
-                                  ▓▓▓▓██▒▒     ▒▒█▓▓▓▓▓▓                                                            
-                                  ██▓▓▓▓          ▓▓▓▓▓▓                         
-
-✅  OSSU - VERIFIED - Slot ${resJSON.attested_header.slot} | Header ${resJSON.attested_header.body_root}`);
+        console.log(`✅  OSSU - VERIFIED - Slot ${resJSON.attested_header.slot} | Header ${resJSON.attested_header.body_root}`);
     }
     // TODO: check the update agains the latest sync commttee
     const ossu = this.optimisticUpdateFromJSON(resJSON);
