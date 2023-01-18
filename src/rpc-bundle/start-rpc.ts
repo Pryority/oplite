@@ -74,7 +74,7 @@ async function main() {
     // 3. THIRD STEP IN LOOP, RECALL SYNC
     const provider = await cm.sync();
     await startServer(provider, port);
-    console.log(provider, '\n')
+    console.log('PROVIDER', provider)
     // console.log('BOOTSTRAP NODES FROM NODE PROVIDER CHOSEN IN .env (PROVIDER_URL)', await provider.common.bootstrapNodes())
     console.log(`
         .         . .             .  *        *  .        . .             .  *        *    *                                          .     *.

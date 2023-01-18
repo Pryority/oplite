@@ -46,7 +46,6 @@ export class OptimisticLightClient extends BaseClient {
   ): Promise<Uint8Array[]> {
     if (period === this.genesisPeriod) return this.genesisCommittee;
     if (!expectedCommitteeHash) throw new Error('expectedCommitteeHash required');
-    // console.log('this.provers[proverIndex].getCommittee(period)',this.provers[proverIndex].getCommittee(period))
     return await this.provers[proverIndex].getCommittee(period);
   } 
 

@@ -81,13 +81,10 @@ export abstract class BaseClient {
     const currentPeriod = this.getCurrentPeriod();
     if (currentPeriod <= this.latestPeriod) {return }
     const proverInfos = await this.syncFromGenesis();
-    // const proverInfosAsHex = proverInfos[0].syncCommittee.map(pk => smallHexStr(pk))
-    // console.log('PROVERS:', proverInfosAsHex)
 
     if (proverInfos.length === 0) throw new Error("Failed to retrieve proverInfos");
     this.latestCommittee = proverInfos[0].syncCommittee;
     this.latestPeriod = currentPeriod;
-    // console.log('proverInfos[0].syncCommittee',proverInfos[0].syncCommittee)
   }
 
   // getter that returns a boolean indicating if the client is synced with the latest execution
