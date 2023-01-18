@@ -96,28 +96,8 @@ export class ClientManager {
     // 2. HAPPENS IMMEDIATELY AFTER SUBSCRIBING TO THE BASE CLIENT
     this.client.subscribe(ei => {
       let prevEI: ExecutionInfo;
-      console.log(`
-      ░▓▓▓▓▓                                                                        
-      ▓▓▓▓▓▓░░                                                                      
-      ▓▓▓▓▓▓▓▓                                                                                                                                  
-    ░░▓▓▓▓▓▓▓▓▒▒                                                                  
-  ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░                                                              
-  ▓▓▓▓████▓▓████▓▓▓▓                                                              
-▒▒▓▓██▓▓████▓▓▒▒▓▓▓▓▒▒                                                            
-▓▓▓▓██▒▒     ▒▒█▓▓▓▓▓▓                                                            
-██▓▓▓▓          ▓▓▓▓▓▓                                                            
-
-✨  LATEST EXECUTION - Block Number ${ei.blockNumber} | Block Hash ${ei.blockhash}
-⏰  Awaiting next OSSU...
-
-▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
-░░▓▓▓▓▒▒      ▒▒▓▓▓▓▒▒                                                            
-  ▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓                                                              
-    ▓▓▓▓▓▓▓▓▓▓▓▓██░░                                                              
-      ░░▓▓████▒▒                                                                            
-      ▓▓▓▓▓▓▓▓                                                                                                                                   
-      ▓▓▓▓▓▓▓▓                                                                    
-      ░░▓▓██▒▒ `,
+      console.log(`✨  OSSU - GOT PAYLOAD - Block Number ${ei.blockNumber} | Block Hash ${ei.blockhash}
+⏰  OSSU - AWAITING - Latest Slot`,
       );
       provider.update(ei.blockhash, ei.blockNumber);
     });

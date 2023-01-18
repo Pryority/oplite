@@ -46,6 +46,7 @@ export abstract class BaseClient {
     this.genesisPeriod = computeSyncPeriodAtSlot(config.genesis.slot);
     this.genesisTime = config.genesis.time;
     this.chainConfig = config.chainConfig;
+    console.log(config.n)
   }
 
   protected abstract syncFromGenesis(): Promise<ProverInfo[]>;
@@ -78,14 +79,12 @@ export abstract class BaseClient {
             if (execution) {
                 return execution;
             }
-            // else, throw an error
             throw new Error('🚫 Invalid Optimistic Update: insufficient signatures');
         }, {
-            retries: 3,  // number of retries
-            onRetry: (e: Error) => console.log(e.message) // log the error message
+          retries: 3,  onRetry: (e: Error) => console.log(e.message)
         });
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   }
 
@@ -96,7 +95,16 @@ export abstract class BaseClient {
     const checkUpdates = async () => {
         try {
             await this.sync();
-            console.log('\n⏳ OSSU - Getting latest execution...')
+            console.log(`⏳  OSSU - FETCH - Latest!
+            
+                                  ▓▓▓▓▓▓          ▓▓▓▓▓▓                                                            
+                                  ░░▓▓▓▓▒▒      ▒▒▓▓▓▓▒▒                                                            
+                                    ▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓                                                              
+                                      ▓▓▓▓▓▓▓▓▓▓▓▓██░░                                                              
+                                        ░░▓▓████▒▒                                                                            
+                                        ▓▓▓▓▓▓▓▓                                                                                                                                   
+                                        ▓▓▓▓▓▓▓▓                                                                    
+                                        ░░▓▓██▒▒ `)
             const ei = await this.getLatestExecution();
             if (ei && ei.blockhash !== this.latestBlockHash) {
                 this.latestBlockHash = ei.blockhash;
@@ -110,38 +118,12 @@ export abstract class BaseClient {
     timeoutId = setTimeout(checkUpdates, POLLING_DELAY);
   }
 
-  // This function retrieves the latest execution from the server and returns it as an OptimisticUpdate object.
   protected async getLatestExecution(): Promise<ExecutionInfo | null> {
-    const { data } = await axios.get(`${this.beaconChainAPIURL}/eth/v1/beacon/light_client/optimistic_update`);
+    try {
+    const res = await axios.get(`${this.beaconChainAPIURL}/eth/v1/beacon/light_client/optimistic_update`);
+    const resJSON = res.data.data;
     if (firstTime) {
       console.log(`
-                        *          .
-                        *       '
-                    *                *
-
-
-                              *                            .  *       .             *
-                                      
-                                        .        *       .       .       *
-                                                              .     *
-                            .  *        *
-                        .
-                                        .        .
-                                          .  *           *                     *
-                            .
-                  *          .   *    *
-                                  .      .  *       .             *
-                                      
-                                        .        *       .       .       *
-                                                              .     *
-                            .  *        *
-                        .
-                                        .        .
-                                          .  *           *                     *
-                            .
-                  *          .   *    *
-                                  .
-                                                  .        .
                                                     .  *           *                     *
                                       .
                   *          .   *
@@ -191,13 +173,33 @@ export abstract class BaseClient {
       `);
       firstTime = false;
     } else {
-      console.log(`✅ OSSU - VERIFIED - Slot ${data.data.attested_header.slot} | Header ${data.data.attested_header.body_root}`);
+        console.log(`                   ░▓▓▓▓▓                                                                        
+                                        ▓▓▓▓▓▓░░                                                                      
+                                        ▓▓▓▓▓▓▓▓                                                                                                                                  
+                                      ░░▓▓▓▓▓▓▓▓▒▒                                                                   
+                                    ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░                                                              
+                                    ▓▓▓▓████▓▓████▓▓▓▓                                                              
+                                  ▒▒▓▓██▓▓████▓▓▒▒▓▓▓▓▒▒                                                            
+                                  ▓▓▓▓██▒▒     ▒▒█▓▓▓▓▓▓                                                            
+                                  ██▓▓▓▓          ▓▓▓▓▓▓                         
+
+✅  OSSU - VERIFIED - Slot ${resJSON.attested_header.slot} | Header ${resJSON.attested_header.body_root}`);
     }
-    const ossu = this.optimisticUpdateFromJSON(data.data);
+    // TODO: check the update agains the latest sync commttee
+    const ossu = this.optimisticUpdateFromJSON(resJSON);
     const verify = await this.optimisticUpdateVerify(this.latestCommittee, ossu);
-    if (!verify.correct) throw new Error(`🚫 Invalid Optimistic Update: ${verify.reason}`);
-    // console.log(`✅ Optimistic Update - VERIFIED - Slot ${data.data.attested_header.slot}, Header ${data.data.attested_header.body_root}`);
-    return this.getExecutionFromBlockRoot(data.data.attested_header.slot, data.data.attested_header.body_root);
+    if (!verify.correct) {
+      console.error(`🚫  OSSU - INVALID - ${verify.reason}`);
+      return null;
+    }
+      return this.getExecutionFromBlockRoot(
+        resJSON.attested_header.slot,
+        resJSON.attested_header.body_root,
+      );
+    } catch (err) {
+      console.error(`🚫 Invalid Optimistic Update: ${err}`);
+      return null;
+    }
   }
 
   // LOTS OF LOGGING HERE
