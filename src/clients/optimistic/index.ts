@@ -61,8 +61,8 @@ export class OptimisticLightClient extends BaseClient {
   */
   async checkCommitteeHashAt(proverIndex: number, expectedCommitteeHash: Uint8Array, period: number, prevCommittee: Uint8Array[]): Promise<boolean> {
     const update = await this.provers[proverIndex].getSyncUpdate(period - 1);
-    const validOrCommittee = await this.syncUpdateVerifyGetCommittee(prevCommittee, period, update);
-    return validOrCommittee && isUint8ArrayEq(this.getCommitteeHash(validOrCommittee), expectedCommitteeHash);
+    const committeeValid = await this.syncUpdateVerifyGetCommittee(prevCommittee, period, update);
+    return committeeValid && isUint8ArrayEq(this.getCommitteeHash(committeeValid), expectedCommitteeHash);
   } 
 
 
@@ -126,6 +126,7 @@ export class OptimisticLightClient extends BaseClient {
         return null;
         }
       }));
+
       const nonNullIndex = committeeHashes.findIndex(v => v !== null);
       if (nonNullIndex === -1) {
         proverInfos = [];

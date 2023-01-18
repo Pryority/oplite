@@ -8,7 +8,7 @@ import { digest } from '@chainsafe/as-sha256';
 import { IBeaconConfig } from '@lodestar/config';
 import type { PublicKey } from '@chainsafe/bls/types';
 import bls from '@chainsafe/bls/switchable';
-import { ListCompositeType, fromHexString, toHexString } from '@chainsafe/ssz';
+import { fromHexString, toHexString } from '@chainsafe/ssz';
 import {
   computeSyncPeriodAtSlot,
   getCurrentSlot,
@@ -30,10 +30,34 @@ import { utils } from 'ethers';
 
 let firstTime = true;
 
+/**
+* @class BaseClient
+*/
 export abstract class BaseClient {
+  /*
+  * Array of genesis committee members
+  * @type {Uint8Array[]}
+  * @memberof BaseClient
+  */
   genesisCommittee: Uint8Array[];
+  /**
+  * Period of the genesis committee
+  * @type {number}
+  * @memberof BaseClient
+  */
   genesisPeriod: number;
+  /**
+  *
+  * Time of the genesis committee
+  * @type {number}
+  * @memberof BaseClient
+  */
   genesisTime: number;
+  /**
+  * Chain configuration
+  * @type {IBeaconConfig}
+  * @memberof BaseClient
+  */
   chainConfig: IBeaconConfig;
 
   latestCommittee: Uint8Array[];
@@ -80,7 +104,7 @@ export abstract class BaseClient {
             if (execution) {
                 return execution;
             }
-            throw new Error('🚫 Invalid Optimistic Update: insufficient signatures');
+            throw new Error('🚫 Invalid Optimistic Update: no new updates');
         }, {
           retries: 3,  onRetry: (e: Error) => console.log(e.message)
         });
@@ -96,7 +120,7 @@ export abstract class BaseClient {
     const checkUpdates = async () => {
         try {
             await this.sync();
-            console.log(`⏳  OSSU - FETCH - Latest!`)
+            console.log(`🔅  OSSU - FETCH - Latest!`)
             const ei = await this.getLatestExecution();
             if (ei && ei.blockhash !== this.latestBlockHash) {
                 this.latestBlockHash = ei.blockhash;
@@ -138,23 +162,19 @@ export abstract class BaseClient {
 `);
       firstTime = false;
     } else {
-        const prevOSSU = {slot: resJSON.attested_header.slot, body_root: resJSON.attested_header.body_root};
-        console.log(`✅  OSSU - VERIFIED - Slot ${resJSON.attested_header.slot} | Header ${resJSON.attested_header.body_root}`);
+      console.log(`✅  OSSU - VERIFIED - Slot ${resJSON.attested_header.slot} | Header ${resJSON.attested_header.body_root}`);
     }
     // TODO: check the update agains the latest sync commttee
     const ossu = this.optimisticUpdateFromJSON(resJSON);
-    // console.log(ossu);
-    // console.log(ossu);
-    
     const resParentRoot =  ossu.attestedHeader.parentRoot;
     const parentRoot = utils.hexlify(resParentRoot);
     const resStateRoot =  ossu.attestedHeader.stateRoot;
     const stateRoot = utils.hexlify(resStateRoot);
     const resBodyRoot =  ossu.attestedHeader.bodyRoot;
     const bodyRoot = utils.hexlify(resBodyRoot);
-    console.log(`🔳 OSSU - BODY ROOT ${parentRoot}
-🔳 OSSU - STATE ROOT ${stateRoot}
-🔳 OSSU - BODY ROOT ${bodyRoot}`);
+    console.log(`🌱  OSSU - PARENT ROOT ${parentRoot}
+🌱  OSSU - STATE ROOT ${stateRoot}
+🌱  OSSU - BODY ROOT ${bodyRoot}`);
     const verify = await this.optimisticUpdateVerify(this.latestCommittee, ossu);
     if (!verify.correct) {
       console.error(`🚫  OSSU - INVALID - ${verify.reason}`);
@@ -180,7 +200,6 @@ export abstract class BaseClient {
     const x = blockJSON.execution_payload;
     // console.log(x)
     const block = bellatrix.ssz.BeaconBlockBody.fromJson(blockJSON);
-    // const types = guessAbiEncodedData(blockJSON);
     // console.log(block)
     const blockRoot = toHexString(bellatrix.ssz.BeaconBlockBody.hashTreeRoot(block));
     if (blockRoot !== expectedBlockRoot) throw Error(`block provided by the beacon chain api doesn't match the expected block root`);
@@ -214,10 +233,6 @@ export abstract class BaseClient {
     return pubkeys.map(pk => bls.PublicKey.fromBytes(pk));
   }
 
-  // This function is ovveride of the original function in
-  // @chainsafe/lodestar-light-client/lib/utils/utils
-  // this was required as the light client doesn't have access
-  // to aggregated signatures
   protected async syncUpdateVerifyGetCommittee(prevCommittee: Uint8Array[], period: number, update: LightClientUpdate): Promise<false | Uint8Array[]> {
     try {
       // check if the update has valid signatures

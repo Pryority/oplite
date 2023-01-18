@@ -97,7 +97,8 @@ export class ClientManager {
     this.client.subscribe(ei => {
       let prevEI: ExecutionInfo;
       console.log(`✨  OSSU - GOT PAYLOAD - Block Number ${ei.blockNumber} | Block Hash ${ei.blockhash}
-⏰  OSSU - AWAITING - Latest Slot`,
+      
+⏰  AWAITING - Latest Slot\n`,
       );
       provider.update(ei.blockhash, ei.blockNumber);
     });
