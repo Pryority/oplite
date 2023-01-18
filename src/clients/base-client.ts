@@ -26,6 +26,7 @@ import {
   VerifyWithReason,
 } from './types.js';
 import { Bytes32, OptimisticUpdate, LightClientUpdate } from '../types.js';
+import { utils } from 'ethers';
 
 let firstTime = true;
 
@@ -115,23 +116,45 @@ export abstract class BaseClient {
     const resJSON = res.data.data;
     if (firstTime) {
       console.log(`
-                                                    .  *           *                     *
+      *            .       .       **                     *
                                       .
                   *          .   *
                                       .  *       .             *
 
                                       .        *       .       .       *
-                                                                                                        .     *
-                  .  *        *
-                  .
+    *       .                                                                                     .     *
+                  .  *        *        .  *           *  
+ *        *        .                     .
                               .        .
-                                .  *           *           `);
+             .  *           *           
+                                
+
+  8""""8                                   8                   
+  8      eeee eeeee  ee   e eeee eeeee     8  eeeee eeee eeeee 
+  8eeeee 8    8   8  88   8 8    8   8     8e 8   8 8    8  88 
+      88 8eee 8eee8e 88  e8 8eee 8eee8e    88 8e  8 8eee 8   8 
+  e   88 88   88   8  8  8  88   88   8    88 88  8 88   8   8 
+  8eee88 88ee 88   8  8ee8  88ee 88   8    88 88  8 88   8eee8 
+`);
       firstTime = false;
     } else {
+        const prevOSSU = {slot: resJSON.attested_header.slot, body_root: resJSON.attested_header.body_root};
         console.log(`✅  OSSU - VERIFIED - Slot ${resJSON.attested_header.slot} | Header ${resJSON.attested_header.body_root}`);
     }
     // TODO: check the update agains the latest sync commttee
     const ossu = this.optimisticUpdateFromJSON(resJSON);
+    // console.log(ossu);
+    // console.log(ossu);
+    
+    const resParentRoot =  ossu.attestedHeader.parentRoot;
+    const parentRoot = utils.hexlify(resParentRoot);
+    const resStateRoot =  ossu.attestedHeader.stateRoot;
+    const stateRoot = utils.hexlify(resStateRoot);
+    const resBodyRoot =  ossu.attestedHeader.bodyRoot;
+    const bodyRoot = utils.hexlify(resBodyRoot);
+    console.log(`🔳 OSSU - BODY ROOT ${parentRoot}
+🔳 OSSU - STATE ROOT ${stateRoot}
+🔳 OSSU - BODY ROOT ${bodyRoot}`);
     const verify = await this.optimisticUpdateVerify(this.latestCommittee, ossu);
     if (!verify.correct) {
       console.error(`🚫  OSSU - INVALID - ${verify.reason}`);
