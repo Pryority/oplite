@@ -1,7 +1,7 @@
 # Kevlar
 
 [![Join the chat at https://discord.gg/ePV3prSPGW](https://img.shields.io/badge/chat-on%20discord-blue.svg)](https://discord.gg/ePV3prSPGW)
-![KevlarArchitecture](./kevlar-architecture.png)
+![KevlarArchitecture](./assets/images/kevlar-architecture.png)
 
 A light client for interacting with a beacon chain (a type of blockchain) in the context of a proof-of-stake network. The LightClient class extends the BaseClient class and has a syncProver method that takes in a prover (an object that implements the IProver interface), a starting period, a current period, and a starting committee. It then iterates through the periods between the starting and current period and calls the prover's getSyncUpdate method to get an update for the current period. It then calls the syncUpdateVerifyGetCommittee method to verify the update and get the updated committee. If the update is valid, it adds it to the store (if provided) and updates the startCommittee. If no honest prover is found, the method throws an error. The OptimisticLightClient class is similar but it doesn't use a store and has a getCommittee method that takes in a period, prover index, and expected committee hash, and returns the committee for that period. It has a checkCommitteeHashAt method which compares the committee hash returned by the prover to the expected committee hash.
 
