@@ -71,7 +71,6 @@ export abstract class BaseClient {
     this.genesisPeriod = computeSyncPeriodAtSlot(config.genesis.slot);
     this.genesisTime = config.genesis.time;
     this.chainConfig = config.chainConfig;
-    console.log(config.n)
   }
 
   protected abstract syncFromGenesis(): Promise<ProverInfo[]>;
