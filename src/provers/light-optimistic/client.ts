@@ -10,7 +10,6 @@ export class LightOptimisticProver implements IProver {
 
   constructor(protected serverURL: string) {}
 
-
   // Retrieves the committee for a given period or the latest period. It uses the cache to check if the committee has already been retrieved and stored, and if not, it makes a GET request to the server to retrieve the committee. The committee is then deserialized and returned as an array of Uint8Arrays.
   async getCommittee(period: number | 'latest'): Promise<Uint8Array[]> {
     let res: Uint8Array | undefined = await this.cache.get(`/sync-committee/${period}`) as Uint8Array || await handleGETRequest(`${this.serverURL}/sync-committee/${period}`);
@@ -42,10 +41,10 @@ export class LightOptimisticProver implements IProver {
   async getBlockRoot(blockRoot: Bytes32): Promise<Uint8Array> {
   let res: Uint8Array | undefined = await this.cache.get(`/sync-committee/block-root/${blockRoot}`) as Uint8Array || await handleGETRequest(`${this.serverURL}/sync-committee/block-root/${blockRoot}`);
   try {
-  res = await this.cache.get(`/sync-committee/block-root/${blockRoot}`) as Uint8Array || await handleGETRequest(`${this.serverURL}/sync-committee/block-root/${blockRoot}`);
-  await this.cache.set(`/sync-committee/block-root/${blockRoot}`, res);
+    res = await this.cache.get(`/sync-committee/block-root/${blockRoot}`) as Uint8Array || await handleGETRequest(`${this.serverURL}/sync-committee/block-root/${blockRoot}`);
+    await this.cache.set(`/sync-committee/block-root/${blockRoot}`, res);
   } catch (error) {
-  console.error(error);
+    console.error(error);
   }
   return res;
   }
@@ -53,10 +52,10 @@ export class LightOptimisticProver implements IProver {
   async getCommitteeHash(period: number, currentPeriod: number, cacheCount: number): Promise<Uint8Array | undefined> {
     const _count = Math.min(currentPeriod - period + 1, cacheCount);
     if (!this.cachedHashes.has(period)) {
-    const vals = await this._getHashes(period, _count);
-    for (let i = 0; i < _count; i++) {
-    this.cachedHashes.set(period + i, vals[i]);
-    }
+      const vals = await this._getHashes(period, _count);
+      for (let i = 0; i < _count; i++) {
+        this.cachedHashes.set(period + i, vals[i]);
+      }
     }
     return this.cachedHashes.get(period);
   }

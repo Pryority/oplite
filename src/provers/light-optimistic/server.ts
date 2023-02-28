@@ -79,6 +79,7 @@ export async function startServer(
 
   httpServer.listen(port, function () {
     console.log(`🌐 Server listening on port ${port}`);
+    console.log(`⏰ Fetching latest Optimistic State Shard Update (OSSU)`);
   });
 }
 

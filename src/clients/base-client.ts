@@ -100,7 +100,7 @@ export abstract class BaseClient {
             if (execution) {
                 return execution;
             }
-            throw new Error('🚫 Invalid Optimistic Update: no new updates');
+            throw new Error('🚫  ERROR - Invalid Optimistic Update: no new updates');
         }, {
           retries: 3,  onRetry: (e: Error) => console.log(e.message)
         });
@@ -175,7 +175,7 @@ export abstract class BaseClient {
         resJSON.attested_header.body_root,
       );
     } catch (err) {
-      console.error(`🚫 Invalid Optimistic Update: ${err}`);
+      console.error(`🚫  ERROR - Invalid Optimistic Update: ${err}`);
       return null;
     }
   }

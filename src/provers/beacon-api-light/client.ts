@@ -14,7 +14,7 @@ export class BeaconAPIProver implements IProver {
   maxCount: number,
   ): Promise<LightClientUpdate[]> {
   const res = await handleGETRequest(`${this.serverURL}/eth/v1/beacon/light_client/updates?start_period=${startPeriod}&count=${maxCount}`, false,);
-  console.log(res)
+  // console.log("\n\n\n THIS LOG NEEDS A PROPER COMMENT \n\n\n", res)
   return res.map((u: any) => altair.ssz.LightClientUpdate.fromJson(u.data));
   }
   
@@ -23,10 +23,10 @@ export class BeaconAPIProver implements IProver {
   if (!this.cachedSyncUpdate.has(period)) {
   const vals = await this._getSyncUpdates(period, _cacheCount);
   for (let i = 0; i < _cacheCount; i++) {
-  this.cachedSyncUpdate.set(period + i, vals[i]);
+    this.cachedSyncUpdate.set(period + i, vals[i]);
   }
   }
-  console.log('this.cachedSyncUpdate.get(period)!',this.cachedSyncUpdate.get(period)!)
+  // console.log('this.cachedSyncUpdate.get(period)!',this.cachedSyncUpdate.get(period)!)
   return this.cachedSyncUpdate.get(period)!;
   }
 }

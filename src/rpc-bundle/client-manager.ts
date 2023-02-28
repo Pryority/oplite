@@ -28,9 +28,6 @@ import { ExecutionInfo } from '../clients/types.js';
 */
 export class ClientManager {
   client: BaseClient;
-
-
-
   /**
    * Initializes a new instance of the ClientManager class.
    * @param chain The Ethereum chain that the client will connect to.
@@ -55,9 +52,6 @@ export class ClientManager {
       provers,
     );
   }
-
-
-
 
   /**
   * @function sync
@@ -94,18 +88,16 @@ export class ClientManager {
       this.chain,
     );
     // 2. HAPPENS IMMEDIATELY AFTER SUBSCRIBING TO THE BASE CLIENT
-    this.client.subscribe(ei => {
-      let prevEI: ExecutionInfo;
-      console.log(`✨  OSSU - GOT PAYLOAD - Block Number ${ei.blockNumber} | Block Hash ${ei.blockhash}
-      
-⏰  AWAITING - Latest Slot\n`,
-      );
-      provider.update(ei.blockhash, ei.blockNumber);
-    });
-
+    try {
+      this.client.subscribe(ei => {
+        let prevEI: ExecutionInfo;
+        console.log(`✨  OSSU - GOT PAYLOAD - Block Number ${ei.blockNumber} | Block Hash ${ei.blockhash}\n`);
+        console.log(`⏰  AWAITING - Latest Slot\n`);
+        provider.update(ei.blockhash, ei.blockNumber);
+      });
+    } catch (error) {
+      console.log(`⏰  ERROR - Could not get execution info \n`);
+    }
     return provider;
   }
-
-
-
 }
