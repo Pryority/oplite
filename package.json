@@ -1,13 +1,13 @@
 {
-  "name": "@pryority/mykevlar",
-  "version": "0.2.6",
-  "description": "Light client-based RPC Proxy for PoS Ethereum",
+  "name": "@pryority/oplite",
+  "version": "0.1.0",
+  "description": "A Light client-based RPC Proxy for PoS Ethereum",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shresthagrawal/kevlar.git"
+    "url": "git+https://github.com/pryority/oplite.git"
   },
-  "author": "Shresth Agrawal <shresthagrawal.31@gmail.com>",
+  "author": "Matthew Pryor <matthewapryor@gmail.com>",
   "license": "MIT",
   "private": false,
   "type": "module",
@@ -51,17 +51,12 @@
     "yargs": "17.5.1"
   },
   "scripts": {
-    "install": "concurrently --kill-others \"yarn install:RPC\"",
-    "install:RPC": "yarn install",
     "build": "tsc",
     "prepack": "npm run build",
-    "start:server": "rm -rf mydb && node ./dist/provers/start-server.js",
     "rpc-proxy": "npx ts-node ./src/rpc-bundle/start-rpc.ts"
   },
   "bin": {
-    "kevlar": "dist/rpc-bundle/start-rpc.js",
-    "rpc-proxy": "dist/rpc-bundle/start-rpc.js",
-    "rpc-prover": "dist/provers/start-server.js"
+    "rpc-proxy": "dist/rpc-bundle/start-rpc.js"
   },
   "keywords": [
     "lightclients",
@@ -71,7 +66,7 @@
     "rpc-proxy"
   ],
   "bugs": {
-    "url": "https://github.com/shresthagrawal/kevlar/issues"
+    "url": "https://github.com/pryority/oplite/issues"
   },
-  "homepage": "https://github.com/shresthagrawal/kevlar#readme"
+  "homepage": "https://github.com/pryority/oplite#readme"
 }
